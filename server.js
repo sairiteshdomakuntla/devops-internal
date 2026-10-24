@@ -10,13 +10,17 @@ app.get("/students", (req, res) => {
 });
 
 app.post("/students", (req, res) => {
+  if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+    return res.status(400).json({ message: "Student data must be a JSON object" });
+  }
+
   students.push(req.body);
   res.status(201).json(req.body);
 });
 
 app.put("/students/:id", (req, res) => {
   const id = Number(req.params.id);
-  const index = students.findIndex(s => s.id === id);
+  const index = students.findIndex(s => s && s.id === id);
 
   if (index === -1) {
     return res.status(404).json({ message: "Student not found" });
